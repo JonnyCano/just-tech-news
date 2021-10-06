@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 
@@ -45,12 +46,25 @@ User.init(
         }
     },
     {
+    hooks: {
+        // set up beforeCreate lifecycle "hook" functionality
+        // use the beforeCreate() hook to execute the bcrypt hash function
+        beforeCreate(userData) {
+            // execute bcrypt on the plaintext password. pass in the userData object that contains the plaintext password in the password property, 10 as the saltRound value for greater difficulty hacking
+            return bcrypt.hash(userData.password, 10).then(newUserData => {
+                // exit out of the function, returning the hashed password in the newUserData function
+                return newUserData
+            });
+        }
+    },
     // TABLE CONFIGURATION OPTIONS GO HERE (https://sequelize.org/v5/manual/models-definition.html#configuration))
 
     // pass in our imported sequelize connection (the direct connection to our database)
     sequelize,
     // dont't automatically create createdAt/updatedAt timestamp fields
     timestamps: false,
+    // Something to do with the hooks:
+    freezeTableName: true,
     // use underscores instead of camel-casing (i.e. `comment_text` and not `commentText`)
     underscored: true,
     // make it so our model name stays lowercase in the database
