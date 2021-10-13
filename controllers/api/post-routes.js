@@ -1,12 +1,15 @@
 const router = require('express').Router();
 const sequelize = require('../../config/connection');
 const { Post, User, Vote, Comment } = require('../../models');
+const withAuth = require('../../utils/auth');
 
 // get all users; return all posts and their nested properties
 router.get('/', (req, res) => {
     console.log('===========================');
     Post.findAll({
-        order: [['created_at', 'DESC']],
+        order: [
+            ['created_at', 'DESC']
+        ],
         attributes: [
             'id',
             'post_url',
@@ -78,13 +81,13 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
     // expects {title: 'Something!', post_url: 'http://url.com/request', user_id: INTEGER}
     Post.create({
         // use req.body to populate the columns in the post table
         title: req.body.title,
         post_url: req.body.post_url,
-        user_id: req.body.user_id
+        user_id: req.session.user_id
     })
         .then(dbPostData => res.json(dbPostData))
         .catch(err => {
@@ -94,7 +97,7 @@ router.post('/', (req, res) => {
 });
 
 // PUT /api/posts/upvote
-router.put('/upvote', (req, res) => {
+router.put('/upvote', withAuth, (req, res) => {
     // make sure the session exists first
     if (req.session) {
         // pass session id along with all destructured properties on req.body
@@ -107,7 +110,7 @@ router.put('/upvote', (req, res) => {
     }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', withAuth, (req, res) => {
     Post.update(
         {
             // use the request.body value to replace the title of the post
@@ -134,7 +137,7 @@ router.put('/:id', (req, res) => {
         });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', withAuth, (req, res) => {
     Post.destroy({
         where: {
             id: req.params.id
