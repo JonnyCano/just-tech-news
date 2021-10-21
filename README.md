@@ -1,7 +1,7 @@
 # Just Tech News
 
 ## Purpose
-A website that offers a place for anyone to share links with other members that choose to join a discussions with options to like and comment on those links and say whatever is on your mind
+A website for web dev and programming enthusiasts of the modern day. As a member of the community, you can share websites that capture the attention of IT experts to share with novice developers and JS Juggernauts across the web to share their insights or applaud your contribution with a point. You share that in common by having that skill as an option in your unique account as well so join the crew and don't get left behind. All you have to do is provide a username, email and password and before you know it, you'll become a JS Juggernaut too.
 
 ## Built With
 * HTML
